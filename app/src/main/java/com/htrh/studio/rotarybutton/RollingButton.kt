@@ -157,7 +157,9 @@ class RollingButton : View {
     }
 
     private fun drawProgressFg(canvas: Canvas, sweepAngle: Float) {
-        canvas.drawArc(oval!!, 135f, sweepAngle, false, mPaint!!)
+        // set la true thì sẽ vẽ từ tâm ra, false thì chỉ vẽ viền ngoài
+        // tham khảo https://thoughtbot.com/blog/android-canvas-drawarc-method-a-visual-guide
+        canvas.drawArc(oval!!, 135f, sweepAngle, true, mPaint!!)
     }
 
     private fun drawRollableButton(canvas: Canvas, sweepAngle: Float) {
