@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import java.lang.ref.SoftReference
-import java.lang.ref.WeakReference
 import kotlin.math.atan2
 import kotlin.math.floor
 
@@ -14,19 +13,24 @@ class RotaryButton : View {
 
     companion object {
         private const val DEFAULT_MAX_VALUE = 100
+        private const val DEFAULT_MAX_ROTATE_DEGREES = 270
+        private const val DEFAULT_PROGRESS_START_DEGREES = 135f
+        private const val DEFAULT_BUTTON_START_DEGREES = 225
     }
 
+    private var mMaxRotateDegrees: Int = DEFAULT_MAX_ROTATE_DEGREES
+    private var mProgressStartDegrees: Float = DEFAULT_PROGRESS_START_DEGREES
+    private var mButtonStartDegrees: Int = DEFAULT_BUTTON_START_DEGREES
     private var mRotateDegrees: Float = 0f
-    private var mSweepAngle: Float = 0f
-
-    //    private int mProgress;
     private var mMax = DEFAULT_MAX_VALUE.toFloat()
+    private val mIsEnable = true
+
+    private var mSweepAngle: Float = 0f
     private var mCenterCanvasX = 0f
     private var mCenterCanvasY = 0f
     private var mDownDegrees = 0f
     private var mCurrDegrees = 0f
     private var mDegrees = 0f
-    private val mIsEnable = true
 
     private lateinit var mRectF: RectF
     private lateinit var mPaint: Paint
@@ -112,14 +116,14 @@ class RotaryButton : View {
         if (mListener != null) {
             mListener!!.onProgressChange(mDegrees.toInt())
         }
-        //        mProgress = (int) degrees;
         if (mDegrees > mMax) {
             mDegrees = mMax
         }
         if (mDegrees < 0) {
             mDegrees = 0f
         }
-        mSweepAngle = 270 * (mDegrees / mMax)
+        mSweepAngle = mMaxRotateDegrees * (mDegrees / mMax)
+
         canvas.save()
         drawProgress(canvas, mSweepAngle)
         drawButton(canvas, mSweepAngle)
@@ -212,30 +216,113 @@ class RotaryButton : View {
 
     fun setProgressBgImg(id: Int) {
         mProgressBgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+        invalidate()
     }
 
     fun setProgressFgImg(id: Int) {
         mProgressFgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+        invalidate()
     }
 
     fun setButtonBgImg(id: Int) {
         mButtonBgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+        invalidate()
     }
 
     fun setButtonFgImg(id: Int) {
         mButtonFgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+        invalidate()
     }
 
     fun setMax(max: Int) {
         this.mMax = max.toFloat()
     }
 
-    var progress: Int
-        get() = mDegrees.toInt()
-        set(progress) {
-            mDegrees = progress.toFloat()
-            invalidate()
+    fun getMax(): Int {
+        return this.mMax.toInt()
+    }
+
+    fun setProgress(progress: Int) {
+        mDegrees = progress.toFloat()
+        invalidate()
+    }
+
+    fun getProgress(): Int {
+        return mDegrees.toInt()
+    }
+
+    /**
+     * set the max rotation degrees of button
+     *
+     * @param degrees 0 to 360
+     */
+    fun setMaxRotateDegrees(degrees: Int) {
+        mMaxRotateDegrees = when {
+            degrees > 360 -> {
+                360
+            }
+            degrees < 0 -> {
+                0
+            }
+            else -> {
+                degrees
+            }
         }
+    }
+
+    /**
+     * Starting angle (in degrees) where the progress begins
+     *
+     * @param degrees 0 to 360
+     */
+    fun setStartDegrees(degrees: Int) {
+        mProgressStartDegrees = when {
+            degrees > 360 -> {
+                360f
+            }
+            degrees < 0 -> {
+                0f
+            }
+            else -> {
+                degrees.toFloat()
+            }
+        }
+        // giá trị thật để tính toán
+        mProgressStartDegrees -= 90
+    }
+
+    /**
+     * set the start pointing degrees of button foreground.
+     *
+     * @param degrees 0 to 360
+     */
+    fun setButtonStartDegrees(degrees: Int) {
+        mButtonStartDegrees = when {
+            degrees > 360 -> {
+                360
+            }
+            degrees < 0 -> {
+                0
+            }
+            else -> {
+                degrees
+            }
+        }
+    }
+
+//    fun setProgressSize(size: Float) {
+//        mProgressSize = when {
+//            degrees > 360 -> {
+//                360
+//            }
+//            degrees < 0 -> {
+//                0
+//            }
+//            else -> {
+//                degrees
+//            }
+//        }
+//    }
 
     fun setOnSeekBarChangeListener(mListener: OnCircleSeekBarChangeListener?) {
         this.mListener = mListener
@@ -294,14 +381,14 @@ class RotaryButton : View {
     private fun drawProgressFg(canvas: Canvas, sweepAngle: Float) {
         // set la true thì sẽ vẽ từ tâm ra, false thì chỉ vẽ viền ngoài
         // tham khảo https://thoughtbot.com/blog/android-canvas-drawarc-method-a-visual-guide
-        canvas.drawArc(mRectF, 135f, sweepAngle, true, mPaint)
+        canvas.drawArc(mRectF, mProgressStartDegrees, sweepAngle, true, mPaint)
     }
 
     private fun drawButton(canvas: Canvas, sweepAngle: Float) {
         drawButtonBg(canvas)
 
         // rotate image, object be draw after call this method will take effect
-        mRotateDegrees = 225 + sweepAngle //rotation degree
+        mRotateDegrees = mButtonStartDegrees + sweepAngle //rotation degree
 
         canvas.rotate(mRotateDegrees, mCenterCanvasX, mCenterCanvasY)
         drawButtonFg(canvas)
