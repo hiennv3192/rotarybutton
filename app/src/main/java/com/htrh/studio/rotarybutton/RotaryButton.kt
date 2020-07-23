@@ -5,6 +5,10 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import java.lang.ref.SoftReference
+import java.lang.ref.WeakReference
+import kotlin.math.atan2
+import kotlin.math.floor
 
 class RotaryButton : View {
 
@@ -12,13 +16,8 @@ class RotaryButton : View {
         private const val DEFAULT_MAX_VALUE = 100
     }
 
-    private var mProgressBgBm: Bitmap? = null
-    private var mProgressFgBm: Bitmap? = null
-    private var mButtonTopBm: Bitmap? = null
-    private var mButtonBottomBm: Bitmap? = null
-    private var mRectF: RectF? = null
-    private var mPaint: Paint? = null
-    private lateinit var mPaintFlags: PaintFlagsDrawFilter
+    private var mRotateDegrees: Float = 0f
+    private var mSweepAngle: Float = 0f
 
     //    private int mProgress;
     private var mMax = DEFAULT_MAX_VALUE.toFloat()
@@ -28,6 +27,14 @@ class RotaryButton : View {
     private var mCurrDegrees = 0f
     private var mDegrees = 0f
     private val mIsEnable = true
+
+    private lateinit var mRectF: RectF
+    private lateinit var mPaint: Paint
+    private lateinit var mPaintFlags: PaintFlagsDrawFilter
+    private lateinit var mProgressBgBm: SoftReference<Bitmap>
+    private lateinit var mProgressFgBm: SoftReference<Bitmap>
+    private lateinit var mButtonFgBm: SoftReference<Bitmap>
+    private lateinit var mButtonBgBm: SoftReference<Bitmap>
 
     private var mListener: OnCircleSeekBarChangeListener? = null
 
@@ -79,7 +86,11 @@ class RotaryButton : View {
      * reference to a style resource that supplies default values for
      * the view. Can be 0 to not look for defaults.
      */
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init(context)
     }
 
@@ -108,18 +119,15 @@ class RotaryButton : View {
         if (mDegrees < 0) {
             mDegrees = 0f
         }
-        val sweepAngle = 270 * (mDegrees / mMax)
+        mSweepAngle = 270 * (mDegrees / mMax)
         canvas.save()
-        drawProgress(canvas, sweepAngle)
-        drawButton(canvas, sweepAngle)
+        drawProgress(canvas, mSweepAngle)
+        drawButton(canvas, mSweepAngle)
         canvas.restore()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
-//        if (Utils.getDistance(event.getX(), event.getY(), midx, midy) > Math.max(mainCircleRadius, Math.max(backCircleRadius, progressRadius))) {
-//            return super.onTouchEvent(event);
-//        }
         if (mClickListener != null) {
             mClickListener!!.onClick(this)
         }
@@ -132,13 +140,13 @@ class RotaryButton : View {
             }
             val dx = event.x - mCenterCanvasX
             val dy = event.y - mCenterCanvasY
-            val radians = Math.atan2(dy.toDouble(), dx.toDouble())
+            val radians = atan2(dy.toDouble(), dx.toDouble())
             mDownDegrees = (radians * 180 / Math.PI).toFloat()
             mDownDegrees -= 90f
             if (mDownDegrees < 0) {
                 mDownDegrees += 360f
             }
-            mDownDegrees = Math.floor(mDownDegrees / 360 * (mMax + 5).toDouble()).toFloat()
+            mDownDegrees = floor(mDownDegrees / 360 * (mMax + 5).toDouble()).toFloat()
             return true
         }
         if (event.action == MotionEvent.ACTION_MOVE) {
@@ -157,7 +165,9 @@ class RotaryButton : View {
                     mDegrees = 0f
                 }
                 mDownDegrees = mCurrDegrees
-            } else if (mDownDegrees / (mMax + 4) > 0.75f && (mCurrDegrees - 0) / (mMax + 4) < 0.25f) {
+            } else if (mDownDegrees / (mMax + 4) > 0.75f
+                && (mCurrDegrees - 0) / (mMax + 4) < 0.25f
+            ) {
                 mDegrees++
                 if (mDegrees > mMax) {
                     mDegrees = mMax
@@ -200,6 +210,22 @@ class RotaryButton : View {
 //        }
     }
 
+    fun setProgressBgImg(id: Int) {
+        mProgressBgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+    }
+
+    fun setProgressFgImg(id: Int) {
+        mProgressFgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+    }
+
+    fun setButtonBgImg(id: Int) {
+        mButtonBgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+    }
+
+    fun setButtonFgImg(id: Int) {
+        mButtonFgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+    }
+
     fun setMax(max: Int) {
         this.mMax = max.toFloat()
     }
@@ -219,59 +245,88 @@ class RotaryButton : View {
         mRectF = RectF()
         mPaint = Paint()
         mPaintFlags = PaintFlagsDrawFilter(0, 3)
-        mProgressBgBm = BitmapFactory.decodeResource(resources, R.drawable.progress_bg)
-        mProgressFgBm = BitmapFactory.decodeResource(resources, R.drawable.progress_foreground)
-        mButtonTopBm = BitmapFactory.decodeResource(resources, R.drawable.rolling_btn_foreground)
-        mButtonBottomBm = BitmapFactory.decodeResource(resources, R.drawable.rolling_btn_bg)
+        mProgressBgBm =
+            SoftReference(BitmapFactory.decodeResource(resources, R.drawable.progress_bg))
+        mProgressFgBm =
+            SoftReference(BitmapFactory.decodeResource(resources, R.drawable.progress_foreground))
+        mButtonBgBm =
+            SoftReference(BitmapFactory.decodeResource(resources, R.drawable.btn_bg))
+        mButtonFgBm =
+            SoftReference(
+                BitmapFactory.decodeResource(resources, R.drawable.btn_foreground)
+            )
     }
 
     private fun setupPaintShaderProgress(viewWidth: Int, viewHeight: Int) {
         val matrix = Matrix()
-        val src = RectF(0f, 0f, mProgressFgBm!!.width.toFloat(), mProgressFgBm!!.width.toFloat())
+        val src = RectF(
+            0f,
+            0f,
+            mProgressFgBm.get()?.width?.toFloat()!!,
+            mProgressFgBm.get()?.width?.toFloat()!!
+        )
         val dst = RectF(0f, 0f, viewWidth.toFloat(), viewHeight.toFloat())
-        val shader = BitmapShader(mProgressFgBm!!, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+        val shader =
+            BitmapShader(mProgressFgBm.get()!!, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+
         matrix.setRectToRect(src, dst, Matrix.ScaleToFit.CENTER)
         shader.setLocalMatrix(matrix)
-        mPaint!!.shader = shader
+        mPaint.shader = shader
         matrix.mapRect(mRectF, src)
     }
 
     private fun drawProgress(canvas: Canvas, sweepAngle: Float) {
         // create a rectangle frame to contain a progress line
-        mRectF!![0 + 0.toFloat(), 0 + 0.toFloat(), width - 0.toFloat()] = height - 0.toFloat()
+        mRectF.set(
+            0 + 0.toFloat(),
+            0 + 0.toFloat(),
+            width - 0.toFloat(),
+            height - 0.toFloat()
+        )
         drawProgressBg(canvas)
         drawProgressFg(canvas, sweepAngle)
     }
 
     private fun drawProgressBg(canvas: Canvas) {
-        canvas.drawBitmap(mProgressBgBm!!, null, mRectF!!, null)
+        canvas.drawBitmap(mProgressBgBm.get()!!, null, mRectF, null)
     }
 
     private fun drawProgressFg(canvas: Canvas, sweepAngle: Float) {
         // set la true thì sẽ vẽ từ tâm ra, false thì chỉ vẽ viền ngoài
         // tham khảo https://thoughtbot.com/blog/android-canvas-drawarc-method-a-visual-guide
-        canvas.drawArc(mRectF!!, 135f, sweepAngle, true, mPaint!!)
+        canvas.drawArc(mRectF, 135f, sweepAngle, true, mPaint)
     }
 
     private fun drawButton(canvas: Canvas, sweepAngle: Float) {
-        val degrees = 225 + sweepAngle //rotation degree
         drawButtonBg(canvas)
 
         // rotate image, object be draw after call this method will take effect
-        canvas.rotate(degrees, mCenterCanvasX, mCenterCanvasY)
+        mRotateDegrees = 225 + sweepAngle //rotation degree
+
+        canvas.rotate(mRotateDegrees, mCenterCanvasX, mCenterCanvasY)
         drawButtonFg(canvas)
     }
 
     private fun drawButtonBg(canvas: Canvas) {
         // create a rectangle frame to contain a button background
-        mRectF!![0 + 100.toFloat(), 0 + 100.toFloat(), width - 100.toFloat()] = height - 100.toFloat()
-        canvas.drawBitmap(mButtonBottomBm!!, null, mRectF!!, null)
+        mRectF.set(
+            0 + 100.toFloat(),
+            0 + 100.toFloat(),
+            width - 100.toFloat(),
+            height - 100.toFloat()
+        )
+        canvas.drawBitmap(mButtonBgBm.get()!!, null, mRectF, null)
     }
 
     private fun drawButtonFg(canvas: Canvas) {
         // create a rectangle frame to contain a button
-        mRectF!![0 + 180.toFloat(), 0 + 180.toFloat(), width - 180.toFloat()] = height - 180.toFloat()
-        canvas.drawBitmap(mButtonTopBm!!, null, mRectF!!, null)
+        mRectF.set(
+            0 + 180.toFloat(),
+            0 + 180.toFloat(),
+            width - 180.toFloat(),
+            height - 180.toFloat()
+        )
+        canvas.drawBitmap(mButtonFgBm.get()!!, null, mRectF, null)
     }
 
     interface OnCircleSeekBarChangeListener {
