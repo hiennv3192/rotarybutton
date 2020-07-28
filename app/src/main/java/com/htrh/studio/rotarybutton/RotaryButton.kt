@@ -16,8 +16,14 @@ class RotaryButton : View {
         private const val DEFAULT_MAX_ROTATE_DEGREES = 270
         private const val DEFAULT_PROGRESS_START_DEGREES = 135f
         private const val DEFAULT_BUTTON_START_DEGREES = 225
+        private const val DEFAULT_PROGRESS_PADDING = 0f
+        private const val DEFAULT_BTN_BG_PADDING = 100f
+        private const val DEFAULT_BTN_FG_PADDING = 180f
     }
 
+    private var mButtonFgPadding: Float = DEFAULT_BTN_FG_PADDING
+    private var mButtonBgPadding: Float = DEFAULT_BTN_BG_PADDING
+    private var mProgressPadding: Float = DEFAULT_PROGRESS_PADDING
     private var mMaxRotateDegrees: Int = DEFAULT_MAX_ROTATE_DEGREES
     private var mProgressStartDegrees: Float = DEFAULT_PROGRESS_START_DEGREES
     private var mButtonStartDegrees: Int = DEFAULT_BUTTON_START_DEGREES
@@ -275,7 +281,7 @@ class RotaryButton : View {
      *
      * @param degrees 0 to 360
      */
-    fun setStartDegrees(degrees: Int) {
+    fun setProgressStartDegrees(degrees: Int) {
         mProgressStartDegrees = when {
             degrees > 360 -> {
                 360f
@@ -310,19 +316,32 @@ class RotaryButton : View {
         }
     }
 
-//    fun setProgressSize(size: Float) {
-//        mProgressSize = when {
-//            degrees > 360 -> {
-//                360
-//            }
-//            degrees < 0 -> {
-//                0
-//            }
-//            else -> {
-//                degrees
-//            }
-//        }
-//    }
+    /**
+     * set padding for progress and progress background
+     *
+     * @param padding padding left, right, top, bottom
+     */
+    fun setProgressPadding(padding: Float) {
+        mProgressPadding = padding
+    }
+
+    /**
+     * set padding for button background
+     *
+     * @param padding padding left, right, top, bottom
+     */
+    fun setBtnBackgroundPadding(padding: Float) {
+        mButtonBgPadding = padding
+    }
+
+    /**
+     * set padding for progress and progress background
+     *
+     * @param padding padding left, right, top, bottom
+     */
+    fun setBtnForegroundPadding(padding: Float) {
+        mButtonFgPadding = padding
+    }
 
     fun setOnSeekBarChangeListener(mListener: OnCircleSeekBarChangeListener?) {
         this.mListener = mListener
@@ -346,16 +365,24 @@ class RotaryButton : View {
 
     private fun setupPaintShaderProgress(viewWidth: Int, viewHeight: Int) {
         val matrix = Matrix()
+        // kích thước img sẽ được vẽ lên
         val src = RectF(
             0f,
             0f,
             mProgressFgBm.get()?.width?.toFloat()!!,
             mProgressFgBm.get()?.width?.toFloat()!!
         )
-        val dst = RectF(0f, 0f, viewWidth.toFloat(), viewHeight.toFloat())
+        // kích thước canvas để đặt img
+        val dst = RectF(
+            0f + mProgressPadding,
+            0f + mProgressPadding,
+            viewWidth.toFloat() - mProgressPadding,
+            viewHeight.toFloat() - mProgressPadding
+        )
         val shader =
             BitmapShader(mProgressFgBm.get()!!, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
 
+        // scale ảnh được vẽ bởi src cho fit với dst
         matrix.setRectToRect(src, dst, Matrix.ScaleToFit.CENTER)
         shader.setLocalMatrix(matrix)
         mPaint.shader = shader
@@ -365,10 +392,10 @@ class RotaryButton : View {
     private fun drawProgress(canvas: Canvas, sweepAngle: Float) {
         // create a rectangle frame to contain a progress line
         mRectF.set(
-            0 + 0.toFloat(),
-            0 + 0.toFloat(),
-            width - 0.toFloat(),
-            height - 0.toFloat()
+            0 + mProgressPadding,
+            0 + mProgressPadding,
+            width - mProgressPadding,
+            height - mProgressPadding
         )
         drawProgressBg(canvas)
         drawProgressFg(canvas, sweepAngle)
@@ -397,10 +424,10 @@ class RotaryButton : View {
     private fun drawButtonBg(canvas: Canvas) {
         // create a rectangle frame to contain a button background
         mRectF.set(
-            0 + 100.toFloat(),
-            0 + 100.toFloat(),
-            width - 100.toFloat(),
-            height - 100.toFloat()
+            0 + mButtonBgPadding,
+            0 + mButtonBgPadding,
+            width - mButtonBgPadding,
+            height - mButtonBgPadding
         )
         canvas.drawBitmap(mButtonBgBm.get()!!, null, mRectF, null)
     }
@@ -408,10 +435,10 @@ class RotaryButton : View {
     private fun drawButtonFg(canvas: Canvas) {
         // create a rectangle frame to contain a button
         mRectF.set(
-            0 + 180.toFloat(),
-            0 + 180.toFloat(),
-            width - 180.toFloat(),
-            height - 180.toFloat()
+            0 + mButtonFgPadding,
+            0 + mButtonFgPadding,
+            width - mButtonFgPadding,
+            height - mButtonFgPadding
         )
         canvas.drawBitmap(mButtonFgBm.get()!!, null, mRectF, null)
     }
