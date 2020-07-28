@@ -29,7 +29,7 @@ class RotaryButton : View {
     private var mButtonStartDegrees: Int = DEFAULT_BUTTON_START_DEGREES
     private var mRotateDegrees: Float = 0f
     private var mMax = DEFAULT_MAX_VALUE.toFloat()
-    private val mIsEnable = true
+    private var mIsEnable = true
 
     private var mSweepAngle: Float = 0f
     private var mCenterCanvasX = 0f
@@ -212,12 +212,7 @@ class RotaryButton : View {
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
 
-//        isEnable = enabled;
-//        if (enabled) {
-//            mArcPaintPrimary.setColor(ContextCompat.getColor(getContext(), R.color.color_seekbar_progress));
-//        } else {
-//            mArcPaintPrimary.setColor(ContextCompat.getColor(getContext(), R.color.color_disable));
-//        }
+        mIsEnable = enabled;
     }
 
     fun setProgressBgImg(id: Int) {
