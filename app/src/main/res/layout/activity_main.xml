@@ -16,15 +16,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.manh.lib.view.audio.ArcProgressView
-            android:layout_width="220dp"
-            android:layout_height="220dp"
-            android:layout_weight="2" />
+<!--        <com.manh.lib.view.audio.ArcProgressView-->
+<!--            android:layout_width="220dp"-->
+<!--            android:layout_height="220dp"-->
+<!--            android:layout_weight="2" />-->
 
         <com.htrh.studio.rotarybutton.RotaryButton
             android:id="@+id/rb_ex"
             android:layout_width="220dp"
             android:layout_height="220dp"
+            app:buttonBackgroundPadding="100"
+            app:buttonForegroundPadding="120"
+            app:buttonStartDegrees="0"
+            app:progressStartDegrees="0"
+            app:progressMax="300"
             android:layout_weight="2" />
     </LinearLayout>
 

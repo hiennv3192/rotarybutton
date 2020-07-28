@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RotaryButton">
+        <attr name="progressBackgroundDrawable" format="reference" />
+        <attr name="progressForegroundDrawable" format="reference" />
+        <attr name="buttonBackgroundDrawable" format="reference" />
+        <attr name="buttonForegroundDrawable" format="reference" />
+        <attr name="progressMax" format="integer" />
+        <attr name="progress" format="integer" />
+        <attr name="maxRotateDegrees" format="integer" />
+        <attr name="progressStartDegrees" format="integer" />
+        <attr name="buttonStartDegrees" format="integer" />
+        <attr name="progressPadding" format="float" />
+        <attr name="buttonBackgroundPadding" format="float" />
+        <attr name="buttonForegroundPadding" format="float" />
+        <attr name="android:enabled" format="boolean" />
+    </declare-styleable>
+</resources>

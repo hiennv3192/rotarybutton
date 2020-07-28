@@ -7,15 +7,18 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private var click: Boolean = true
+
     companion object {
         const val TAG = "MainActivity"
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        rb_ex.isEnabled = false
-        rb_ex.setOnSeekBarChangeListener(object : RotaryButton.OnCircleSeekBarChangeListener{
+        Log.d(TAG, "${rb_ex.isEnabled}")
+        rb_ex.setOnSeekBarChangeListener(object : RotaryButton.OnCircleSeekBarChangeListener {
             override fun onProgressChange(progress: Int) {
                 Log.d(TAG, "progress: $progress")
             }
@@ -28,11 +31,5 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "stop tracking")
             }
         })
-        rb_ex.setOnClickListener {
-            if (!rb_ex.isEnabled) {
-                Toast.makeText(this, "isEnable: ${rb_ex.isEnabled}", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
     }
 }

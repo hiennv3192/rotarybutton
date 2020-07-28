@@ -21,14 +21,14 @@ class RotaryButton : View {
         private const val DEFAULT_BTN_FG_PADDING = 180f
     }
 
-    private var mButtonFgPadding: Float = DEFAULT_BTN_FG_PADDING
-    private var mButtonBgPadding: Float = DEFAULT_BTN_BG_PADDING
-    private var mProgressPadding: Float = DEFAULT_PROGRESS_PADDING
-    private var mMaxRotateDegrees: Int = DEFAULT_MAX_ROTATE_DEGREES
-    private var mProgressStartDegrees: Float = DEFAULT_PROGRESS_START_DEGREES
-    private var mButtonStartDegrees: Int = DEFAULT_BUTTON_START_DEGREES
+    private var mButtonFgPadding: Float = 0f
+    private var mButtonBgPadding: Float = 0f
+    private var mProgressPadding: Float = 0f
+    private var mMaxRotateDegrees: Int = 0
+    private var mProgressStartDegrees: Float = 0f
+    private var mButtonStartDegrees: Int = 0
     private var mRotateDegrees: Float = 0f
-    private var mMax = DEFAULT_MAX_VALUE.toFloat()
+    private var mMax = 0f
     private var mIsEnable = true
 
     private var mSweepAngle: Float = 0f
@@ -57,7 +57,7 @@ class RotaryButton : View {
      * access the current theme, resources, etc.
      */
     constructor(context: Context) : super(context) {
-        init(context)
+        init(context, null)
     }
 
     /**
@@ -77,7 +77,7 @@ class RotaryButton : View {
      * @param attrs   The attributes of the XML tag that is inflating the view.
      */
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(context)
+        init(context, attrs)
     }
 
     /**
@@ -101,7 +101,7 @@ class RotaryButton : View {
         attrs,
         defStyleAttr
     ) {
-        init(context)
+        init(context, attrs, defStyleAttr)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -137,7 +137,6 @@ class RotaryButton : View {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-
         if (mClickListener != null) {
             mClickListener!!.onClick(this)
         }
@@ -210,9 +209,11 @@ class RotaryButton : View {
     }
 
     override fun setEnabled(enabled: Boolean) {
-        super.setEnabled(enabled)
+        mIsEnable = enabled
+    }
 
-        mIsEnable = enabled;
+    override fun isEnabled(): Boolean {
+        return mIsEnable
     }
 
     fun setProgressBgImg(id: Int) {
@@ -288,8 +289,6 @@ class RotaryButton : View {
                 degrees.toFloat()
             }
         }
-        // giá trị thật để tính toán
-        mProgressStartDegrees -= 90
     }
 
     /**
@@ -342,20 +341,93 @@ class RotaryButton : View {
         this.mListener = mListener
     }
 
-    private fun init(context: Context) {
+    private fun init(context: Context, attrs: AttributeSet?) {
         mRectF = RectF()
         mPaint = Paint()
         mPaintFlags = PaintFlagsDrawFilter(0, 3)
-        mProgressBgBm =
-            SoftReference(BitmapFactory.decodeResource(resources, R.drawable.progress_bg))
-        mProgressFgBm =
-            SoftReference(BitmapFactory.decodeResource(resources, R.drawable.progress_foreground))
-        mButtonBgBm =
-            SoftReference(BitmapFactory.decodeResource(resources, R.drawable.btn_bg))
-        mButtonFgBm =
-            SoftReference(
-                BitmapFactory.decodeResource(resources, R.drawable.btn_foreground)
+
+        val typedArray = context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.RotaryButton,
+            0, 0
+        )
+
+        try {
+            mProgressBgBm = SoftReference(
+                BitmapFactory.decodeResource(
+                    resources,
+                    typedArray.getResourceId(
+                        R.styleable.RotaryButton_progressBackgroundDrawable,
+                        R.drawable.progress_bg
+                    )
+                )
             )
+            mProgressFgBm = SoftReference(
+                BitmapFactory.decodeResource(
+                    resources,
+                    typedArray.getResourceId(
+                        R.styleable.RotaryButton_progressForegroundDrawable,
+                        R.drawable.progress_foreground
+                    )
+                )
+            )
+            mButtonBgBm = SoftReference(
+                BitmapFactory.decodeResource(
+                    resources,
+                    typedArray.getResourceId(
+                        R.styleable.RotaryButton_buttonBackgroundDrawable,
+                        R.drawable.btn_bg
+                    )
+                )
+            )
+            mButtonFgBm = SoftReference(
+                BitmapFactory.decodeResource(
+                    resources,
+                    typedArray.getResourceId(
+                        R.styleable.RotaryButton_buttonForegroundDrawable,
+                        R.drawable.btn_foreground
+                    )
+                )
+            )
+            mMax = typedArray.getInteger(R.styleable.RotaryButton_progressMax, DEFAULT_MAX_VALUE)
+                .toFloat()
+            mDegrees = typedArray.getInteger(R.styleable.RotaryButton_progress, 0)
+                .toFloat()
+            mMaxRotateDegrees = typedArray.getInteger(
+                R.styleable.RotaryButton_maxRotateDegrees,
+                DEFAULT_MAX_ROTATE_DEGREES
+            )
+            mProgressStartDegrees = typedArray.getInteger(
+                R.styleable.RotaryButton_progressStartDegrees,
+                DEFAULT_PROGRESS_START_DEGREES.toInt()
+            ).toFloat()
+            mButtonStartDegrees = typedArray.getInteger(
+                R.styleable.RotaryButton_buttonStartDegrees,
+                DEFAULT_BUTTON_START_DEGREES
+            )
+            mProgressPadding = typedArray.getFloat(
+                R.styleable.RotaryButton_progressPadding,
+                DEFAULT_PROGRESS_PADDING
+            )
+            mButtonBgPadding = typedArray.getFloat(
+                R.styleable.RotaryButton_buttonBackgroundPadding,
+                DEFAULT_BTN_BG_PADDING
+            )
+            mButtonFgPadding = typedArray.getFloat(
+                R.styleable.RotaryButton_buttonForegroundPadding,
+                DEFAULT_BTN_FG_PADDING
+            )
+            mIsEnable = typedArray.getBoolean(
+                R.styleable.RotaryButton_android_enabled,
+                true
+            )
+        } finally {
+            typedArray.recycle()
+        }
+    }
+
+    private fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
+        init(context, attrs)
     }
 
     private fun setupPaintShaderProgress(viewWidth: Int, viewHeight: Int) {
@@ -401,9 +473,15 @@ class RotaryButton : View {
     }
 
     private fun drawProgressFg(canvas: Canvas, sweepAngle: Float) {
-        // set la true thì sẽ vẽ từ tâm ra, false thì chỉ vẽ viền ngoài
+        // set useCenter la true thì sẽ vẽ từ tâm ra, false thì chỉ vẽ viền ngoài
         // tham khảo https://thoughtbot.com/blog/android-canvas-drawarc-method-a-visual-guide
-        canvas.drawArc(mRectF, mProgressStartDegrees, sweepAngle, true, mPaint)
+
+        // mProgressStartDegrees trừ 90 là để cho user dễ hình dung khi thiết định start degrees của
+        // progress và start degrees của button
+        canvas.drawArc(
+            mRectF, mProgressStartDegrees - 90,
+            sweepAngle, true, mPaint
+        )
     }
 
     private fun drawButton(canvas: Canvas, sweepAngle: Float) {
