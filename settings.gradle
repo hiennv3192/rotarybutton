@@ -1,2 +1,3 @@
+include ':RotatyButton'
 include ':app'
 rootProject.name = "RotaryButton"
