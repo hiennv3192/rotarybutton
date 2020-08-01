@@ -101,7 +101,7 @@ class RotaryButton : View {
         attrs,
         defStyleAttr
     ) {
-        init(context, attrs, defStyleAttr)
+        init(context, attrs)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -424,10 +424,6 @@ class RotaryButton : View {
         } finally {
             typedArray.recycle()
         }
-    }
-
-    private fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
-        init(context, attrs)
     }
 
     private fun setupPaintShaderProgress(viewWidth: Int, viewHeight: Int) {

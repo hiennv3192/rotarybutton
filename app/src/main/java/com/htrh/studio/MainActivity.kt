@@ -1,9 +1,10 @@
-package com.htrh.studio.rotarybutton
+package com.htrh.studio
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import com.htrh.studio.rotarybutton.R
+import com.htrh.studio.rotarybutton.RotaryButton
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -18,7 +19,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         Log.d(TAG, "${rb_ex.isEnabled}")
-        rb_ex.setOnSeekBarChangeListener(object : RotaryButton.OnCircleSeekBarChangeListener {
+        rb_ex.setOnSeekBarChangeListener(object :
+            RotaryButton.OnCircleSeekBarChangeListener {
             override fun onProgressChange(progress: Int) {
                 Log.d(TAG, "progress: $progress")
             }
