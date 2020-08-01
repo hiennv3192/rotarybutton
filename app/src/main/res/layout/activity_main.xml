@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.htrh.studio.rotarybutton.RotaryButton
+        <com.htrh.studio.customview.RotaryButton
             android:id="@+id/rb_ex"
             android:layout_width="220dp"
             android:layout_height="220dp"

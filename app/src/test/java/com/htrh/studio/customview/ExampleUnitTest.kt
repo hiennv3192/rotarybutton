@@ -1,4 +1,4 @@
-package com.htrh.studio.rotarybutton
+package com.htrh.studio.customview
 
 import org.junit.Test
 
