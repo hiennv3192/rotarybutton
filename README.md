@@ -1,7 +1,7 @@
 # RotaryButton
 Custom view for user who want to have a rotary button like volume button or a seekbar that is round.
 
-![preview](./demo.png)
+![preview](./demo.PNG)
 
 Installation
 -------
