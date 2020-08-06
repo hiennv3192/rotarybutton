@@ -18,13 +18,13 @@ allprojects {
 ```
 Add the dependency to your module build.gradle:
 
-`implementation 'com.github.hiennv3192:rotarybutton:1.0.4'`
+`implementation 'com.github.hiennv3192:rotarybutton:1.0.5'`
 
 API
 -------
 
 Method | Xml | Description
---- | ---
+--- | --- | ---
 `setEnabled` | android:enabled | make view enable to interact
 `isEnabled` |  | Check view is enable or not
 `setProgressBgImgRes` | app:rotary_progressBackgroundDrawable | Set the image for progress's background
