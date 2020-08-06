@@ -30,6 +30,10 @@ class RotaryButton : View {
     private var mRotateDegrees: Float = 0f
     private var mMax = 0f
     private var mIsEnable = true
+    private var mProgressBgId = R.drawable.progress_bg
+    private var mProgressFgId = R.drawable.progress_foreground
+    private var mButtonBgId = R.drawable.btn_bg
+    private var mButtonFgId = R.drawable.btn_foreground
 
     private var mSweepAngle: Float = 0f
     private var mCenterCanvasX = 0f
@@ -218,7 +222,8 @@ class RotaryButton : View {
      * @param id image resource id
      */
     fun setProgressBgImgRes(id: Int) {
-        mProgressBgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+        mProgressBgId = id
+        mProgressBgBm = getBitmap(mProgressBgId)
         invalidate()
     }
 
@@ -228,7 +233,8 @@ class RotaryButton : View {
      * @param id image resource id
      */
     fun setProgressFgImgRes(id: Int) {
-        mProgressFgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+        mProgressFgId = id
+        mProgressFgBm = getBitmap(mProgressFgId)
         invalidate()
     }
 
@@ -238,7 +244,8 @@ class RotaryButton : View {
      * @param id image resource id
      */
     fun setButtonBgImgRes(id: Int) {
-        mButtonBgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+        mButtonBgId = id
+        mButtonBgBm = getBitmap(mButtonBgId)
         invalidate()
     }
 
@@ -248,7 +255,8 @@ class RotaryButton : View {
      * @param id image resource id
      */
     fun setButtonFgImgRes(id: Int) {
-        mButtonFgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
+        mButtonFgId = id
+        mButtonFgBm = getBitmap(mButtonFgId)
         invalidate()
     }
 
@@ -393,43 +401,39 @@ class RotaryButton : View {
         )
 
         try {
-            mProgressBgBm = SoftReference(
-                BitmapFactory.decodeResource(
-                    resources,
-                    typedArray.getResourceId(
-                        R.styleable.RotaryButton_rotary_progressBackgroundDrawable,
-                        R.drawable.progress_bg
-                    )
-                )
+            // progress background
+            mProgressBgId = typedArray.getResourceId(
+                R.styleable.RotaryButton_rotary_progressBackgroundDrawable,
+                R.drawable.progress_bg
             )
-            mProgressFgBm = SoftReference(
-                BitmapFactory.decodeResource(
-                    resources,
-                    typedArray.getResourceId(
-                        R.styleable.RotaryButton_rotary_progressForegroundDrawable,
-                        R.drawable.progress_foreground
-                    )
-                )
+            mProgressBgBm = getBitmap(mProgressBgId)
+
+            // progress foreground
+            mProgressFgId = typedArray.getResourceId(
+                R.styleable.RotaryButton_rotary_progressForegroundDrawable,
+                R.drawable.progress_foreground
             )
-            mButtonBgBm = SoftReference(
-                BitmapFactory.decodeResource(
-                    resources,
-                    typedArray.getResourceId(
-                        R.styleable.RotaryButton_rotary_buttonBackgroundDrawable,
-                        R.drawable.btn_bg
-                    )
-                )
+            mProgressFgBm = getBitmap(mProgressFgId)
+
+            // button background
+            mButtonBgId = typedArray.getResourceId(
+                R.styleable.RotaryButton_rotary_buttonBackgroundDrawable,
+                R.drawable.btn_bg
             )
-            mButtonFgBm = SoftReference(
-                BitmapFactory.decodeResource(
-                    resources,
-                    typedArray.getResourceId(
-                        R.styleable.RotaryButton_rotary_buttonForegroundDrawable,
-                        R.drawable.btn_foreground
-                    )
-                )
+            mButtonBgBm = getBitmap(mButtonBgId)
+
+            // button foreground
+            mButtonFgId = typedArray.getResourceId(
+                R.styleable.RotaryButton_rotary_buttonForegroundDrawable,
+                R.drawable.btn_foreground
             )
-            mMax = typedArray.getInteger(R.styleable.RotaryButton_rotary_progressMax, DEFAULT_MAX_VALUE)
+            mButtonFgBm = getBitmap(mButtonFgId)
+
+            // other
+            mMax = typedArray.getInteger(
+                R.styleable.RotaryButton_rotary_progressMax,
+                DEFAULT_MAX_VALUE
+            )
                 .toFloat()
             mDegrees = typedArray.getInteger(R.styleable.RotaryButton_rotary_progress, 0)
                 .toFloat()
@@ -466,9 +470,21 @@ class RotaryButton : View {
         }
     }
 
+    private fun getBitmap(resId: Int): SoftReference<Bitmap> {
+        return SoftReference(
+            BitmapFactory.decodeResource(
+                resources,
+                resId
+            )
+        )
+    }
+
     private fun setupPaintShaderProgress(viewWidth: Int, viewHeight: Int) {
         val matrix = Matrix()
         // kích thước img sẽ được vẽ lên
+        if (mProgressFgBm.get() == null) {
+            mProgressFgBm = getBitmap(mProgressFgId)
+        }
         val src = RectF(
             0f,
             0f,
@@ -505,6 +521,9 @@ class RotaryButton : View {
     }
 
     private fun drawProgressBg(canvas: Canvas) {
+        if (mProgressBgBm.get() == null) {
+            mProgressBgBm = getBitmap(mProgressBgId)
+        }
         canvas.drawBitmap(mProgressBgBm.get()!!, null, mRectF, null)
     }
 
@@ -538,6 +557,9 @@ class RotaryButton : View {
             width - mButtonBgPadding,
             height - mButtonBgPadding
         )
+        if (mButtonBgBm.get() == null) {
+            mButtonBgBm = getBitmap(mButtonBgId)
+        }
         canvas.drawBitmap(mButtonBgBm.get()!!, null, mRectF, null)
     }
 
@@ -549,6 +571,9 @@ class RotaryButton : View {
             width - mButtonFgPadding,
             height - mButtonFgPadding
         )
+        if (mButtonFgBm.get() == null) {
+            mButtonFgBm = getBitmap(mButtonFgId)
+        }
         canvas.drawBitmap(mButtonFgBm.get()!!, null, mRectF, null)
     }
 
