@@ -204,10 +204,6 @@ class RotaryButton : View {
         return super.onTouchEvent(event)
     }
 
-    override fun setOnClickListener(mListener: OnClickListener?) {
-        mClickListener = mListener
-    }
-
     override fun setEnabled(enabled: Boolean) {
         mIsEnable = enabled
     }
@@ -216,45 +212,85 @@ class RotaryButton : View {
         return mIsEnable
     }
 
-    fun setProgressBgImg(id: Int) {
+    /**
+     * Set the image for progress's background
+     *
+     * @param id image resource id
+     */
+    fun setProgressBgImgRes(id: Int) {
         mProgressBgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
         invalidate()
     }
 
-    fun setProgressFgImg(id: Int) {
+    /**
+     * Set the image for progress's foreground
+     *
+     * @param id image resource id
+     */
+    fun setProgressFgImgRes(id: Int) {
         mProgressFgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
         invalidate()
     }
 
-    fun setButtonBgImg(id: Int) {
+    /**
+     * Set the image for button's background
+     *
+     * @param id image resource id
+     */
+    fun setButtonBgImgRes(id: Int) {
         mButtonBgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
         invalidate()
     }
 
-    fun setButtonFgImg(id: Int) {
+    /**
+     * Set the image for button's foreground
+     *
+     * @param id image resource id
+     */
+    fun setButtonFgImgRes(id: Int) {
         mButtonFgBm = SoftReference(BitmapFactory.decodeResource(resources, id))
         invalidate()
     }
 
-    fun setMax(max: Int) {
+    /**
+     * Set max for progress
+     *
+     * @param max max value of progress
+     */
+    fun setProgressMax(max: Int) {
         this.mMax = max.toFloat()
     }
 
-    fun getMax(): Int {
+    /**
+     * Get max progress
+     *
+     * @return progress max value
+     */
+    fun getProgressMax(): Int {
         return this.mMax.toInt()
     }
 
+    /**
+     * Set progress
+     *
+     * @param progress progress value
+     */
     fun setProgress(progress: Int) {
         mDegrees = progress.toFloat()
         invalidate()
     }
 
+    /**
+     * Get current progress
+     *
+     * @return current progress value
+     */
     fun getProgress(): Int {
         return mDegrees.toInt()
     }
 
     /**
-     * set the max rotation degrees of button
+     * Set the max rotation degrees of button
      *
      * @param degrees 0 to 360
      */
@@ -292,7 +328,7 @@ class RotaryButton : View {
     }
 
     /**
-     * set the start pointing degrees of button foreground.
+     * Set the start point in degrees of button foreground.
      *
      * @param degrees 0 to 360
      */
@@ -311,7 +347,7 @@ class RotaryButton : View {
     }
 
     /**
-     * set padding for progress and progress background
+     * Set padding for progress foreground and progress background
      *
      * @param padding padding left, right, top, bottom
      */
@@ -320,25 +356,29 @@ class RotaryButton : View {
     }
 
     /**
-     * set padding for button background
+     * Set padding for button background
      *
      * @param padding padding left, right, top, bottom
      */
-    fun setBtnBackgroundPadding(padding: Float) {
+    fun setButtonBgPadding(padding: Float) {
         mButtonBgPadding = padding
     }
 
     /**
-     * set padding for progress and progress background
+     * Set padding for button foreground
      *
      * @param padding padding left, right, top, bottom
      */
-    fun setBtnForegroundPadding(padding: Float) {
+    fun setButtonFgPadding(padding: Float) {
         mButtonFgPadding = padding
     }
 
     fun setOnSeekBarChangeListener(mListener: OnCircleSeekBarChangeListener?) {
         this.mListener = mListener
+    }
+
+    override fun setOnClickListener(mListener: OnClickListener?) {
+        mClickListener = mListener
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
@@ -357,7 +397,7 @@ class RotaryButton : View {
                 BitmapFactory.decodeResource(
                     resources,
                     typedArray.getResourceId(
-                        R.styleable.RotaryButton_progressBackgroundDrawable,
+                        R.styleable.RotaryButton_rotary_progressBackgroundDrawable,
                         R.drawable.progress_bg
                     )
                 )
@@ -366,7 +406,7 @@ class RotaryButton : View {
                 BitmapFactory.decodeResource(
                     resources,
                     typedArray.getResourceId(
-                        R.styleable.RotaryButton_progressForegroundDrawable,
+                        R.styleable.RotaryButton_rotary_progressForegroundDrawable,
                         R.drawable.progress_foreground
                     )
                 )
@@ -375,7 +415,7 @@ class RotaryButton : View {
                 BitmapFactory.decodeResource(
                     resources,
                     typedArray.getResourceId(
-                        R.styleable.RotaryButton_buttonBackgroundDrawable,
+                        R.styleable.RotaryButton_rotary_buttonBackgroundDrawable,
                         R.drawable.btn_bg
                     )
                 )
@@ -384,37 +424,37 @@ class RotaryButton : View {
                 BitmapFactory.decodeResource(
                     resources,
                     typedArray.getResourceId(
-                        R.styleable.RotaryButton_buttonForegroundDrawable,
+                        R.styleable.RotaryButton_rotary_buttonForegroundDrawable,
                         R.drawable.btn_foreground
                     )
                 )
             )
-            mMax = typedArray.getInteger(R.styleable.RotaryButton_progressMax, DEFAULT_MAX_VALUE)
+            mMax = typedArray.getInteger(R.styleable.RotaryButton_rotary_progressMax, DEFAULT_MAX_VALUE)
                 .toFloat()
-            mDegrees = typedArray.getInteger(R.styleable.RotaryButton_progress, 0)
+            mDegrees = typedArray.getInteger(R.styleable.RotaryButton_rotary_progress, 0)
                 .toFloat()
             mMaxRotateDegrees = typedArray.getInteger(
-                R.styleable.RotaryButton_maxRotateDegrees,
+                R.styleable.RotaryButton_rotary_maxRotateDegrees,
                 DEFAULT_MAX_ROTATE_DEGREES
             )
             mProgressStartDegrees = typedArray.getInteger(
-                R.styleable.RotaryButton_progressStartDegrees,
+                R.styleable.RotaryButton_rotary_progressStartDegrees,
                 DEFAULT_PROGRESS_START_DEGREES.toInt()
             ).toFloat()
             mButtonStartDegrees = typedArray.getInteger(
-                R.styleable.RotaryButton_buttonStartDegrees,
+                R.styleable.RotaryButton_rotary_buttonStartDegrees,
                 DEFAULT_BUTTON_START_DEGREES
             )
             mProgressPadding = typedArray.getFloat(
-                R.styleable.RotaryButton_progressPadding,
+                R.styleable.RotaryButton_rotary_progressPadding,
                 DEFAULT_PROGRESS_PADDING
             )
             mButtonBgPadding = typedArray.getFloat(
-                R.styleable.RotaryButton_buttonBackgroundPadding,
+                R.styleable.RotaryButton_rotary_buttonBackgroundPadding,
                 DEFAULT_BTN_BG_PADDING
             )
             mButtonFgPadding = typedArray.getFloat(
-                R.styleable.RotaryButton_buttonForegroundPadding,
+                R.styleable.RotaryButton_rotary_buttonForegroundPadding,
                 DEFAULT_BTN_FG_PADDING
             )
             mIsEnable = typedArray.getBoolean(

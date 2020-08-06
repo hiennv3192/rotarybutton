@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,21 +10,21 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.htrh.studio.rotatybutton.RotaryButton
             android:id="@+id/rb_ex"
             android:layout_width="220dp"
             android:layout_height="220dp"
-            app:buttonBackgroundPadding="100"
-            app:buttonForegroundPadding="120"
-            app:buttonStartDegrees="270"
-            app:progressStartDegrees="270"
-            app:progressMax="300"
-            android:layout_weight="2" />
+            android:layout_weight="2"
+            app:rotary_buttonBackgroundPadding="100"
+            app:rotary_buttonForegroundPadding="120"
+            app:rotary_buttonStartDegrees="270"
+            app:rotary_progressMax="300"
+            app:rotary_progressStartDegrees="270" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
