@@ -4,27 +4,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/linear_btn_roll"
+    <TextView
+        android:id="@+id/tv_rotary_button_progress_value"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/rotary_button_3"
+        app:layout_constraintEnd_toStartOf="@id/rotary_button_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rotary_button_3" />
+
+    <com.htrh.studio.rotatybutton.RotaryButton
+        android:id="@+id/rotary_button"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toTopOf="@id/rotary_button_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rotary_buttonBackgroundPadding="130"
+        app:rotary_buttonForegroundPadding="150"
+        app:rotary_buttonStartDegrees="215"
+        app:rotary_maxRotateDegrees="290"
+        app:rotary_progress="150"
+        app:rotary_progressMax="300"
+        app:rotary_progressPadding="50"
+        app:rotary_progressStartDegrees="215" />
+
+    <com.htrh.studio.rotatybutton.RotaryButton
+        android:id="@+id/rotary_button_2"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toTopOf="@id/rotary_button_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rotary_button"
+        app:rotary_buttonBackgroundDrawable="@drawable/bg_roll"
+        app:rotary_buttonBackgroundPadding="80"
+        app:rotary_buttonForegroundDrawable="@drawable/bt_roll"
+        app:rotary_buttonForegroundPadding="100"
+        app:rotary_buttonStartDegrees="180"
+        app:rotary_progressBackgroundDrawable="@drawable/bg_load_roll"
+        app:rotary_progressForegroundDrawable="@drawable/load_roll"
+        app:rotary_progressPadding="50"
+        app:rotary_progressStartDegrees="225" />
+
+    <com.htrh.studio.rotatybutton.RotaryButton
+        android:id="@+id/rotary_button_3"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.htrh.studio.rotatybutton.RotaryButton
-            android:id="@+id/rb_ex"
-            android:layout_width="220dp"
-            android:layout_height="220dp"
-            android:layout_weight="2"
-            app:rotary_buttonBackgroundPadding="100"
-            app:rotary_buttonForegroundPadding="120"
-            app:rotary_buttonStartDegrees="270"
-            app:rotary_progressMax="300"
-            app:rotary_progressStartDegrees="270" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/rotary_button_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
