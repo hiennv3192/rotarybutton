@@ -44,6 +44,11 @@ Method | Xml | Description | Default value
 `setOnSeekBarChangeListener` |  | Add a listener that will be invoked when the user interacts(start touch, rotate, stop touch) with the view | 
 `setOnClickListener` |  | Add a listener that will be invoked when the user interacts(touch only) with the view | 
 
+Note
+-------
+
+`Please besure your progress foreground image, progress background image, button foreground image, button background image be square`
+
 License
 -------
 
