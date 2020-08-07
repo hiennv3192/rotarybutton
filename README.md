@@ -47,7 +47,7 @@ Method | Xml | Description | Default value
 License
 -------
 
-    Copyright 2020 Nguyen Van Hien
+    Copyright 2020 Nguyễn Văn Hiển
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
