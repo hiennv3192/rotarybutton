@@ -1,5 +1,5 @@
 # RotaryButton
-Custom view for user who want to have a rotary button like volume button or a seekbar that is round.
+Custom view for user who want to have a rotary button like volume button (volume knob) or an arc progress bar.
 
 ![preview](./demo.PNG)
 
