@@ -47,7 +47,7 @@ Method | Xml | Description | Default value
 Note
 -------
 
-`Please besure your progress foreground image, progress background image, button foreground image, button background image be square`
+`Please besure your progress foreground image, progress background image, button foreground image, button background image are square`
 
 License
 -------
